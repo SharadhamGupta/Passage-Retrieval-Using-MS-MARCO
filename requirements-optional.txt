@@ -1,0 +1,14 @@
+# ==============================================================================
+# MS MARCO Passage Retrieval - Optional Dependencies (Sprint 2+)
+# Install these only when implementing Dense Retrieval, FAISS, and Streamlit
+# ==============================================================================
+
+# Dense Embeddings & Vector Search (Sprint 2)
+# Note: For Windows, faiss-cpu is recommended unless NVIDIA GPU + CUDA are configured.
+torch>=2.2.0
+sentence-transformers>=2.5.0
+faiss-cpu>=1.8.0
+
+# Interactive Web Interface (Sprint 4)
+streamlit>=1.32.0
+pandas>=2.2.0

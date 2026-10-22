@@ -1,0 +1,15 @@
+# ==============================================================================
+# MS MARCO Passage Retrieval - Core Dependencies (Sprint 0 & Sprint 1)
+# ==============================================================================
+
+# Configuration & Utilities
+pyyaml>=6.0.1
+tqdm>=4.66.0
+
+# Text Preprocessing & Classical IR
+nltk>=3.8.1
+rank-bm25>=0.2.2
+
+# Testing & Evaluation
+pytest>=8.0.0
+ir_measures>=0.4.0

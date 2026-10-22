@@ -1,0 +1,47 @@
+project:
+  name: "ms-marco-passage-retrieval"
+  version: "0.2.0"
+  random_seed: 42
+
+data:
+  # Mode choices:
+  # "sample" -> 5 passages for instant unit & smoke testing
+  # "dev"    -> 100,000 real MS MARCO passages + 1,000 queries in data/processed/
+  # "full"   -> 8,841,823 full MS MARCO collection in data/raw/
+  mode: "dev"
+  
+  sample_passages_path: "data/sample/sample_passages.tsv"
+  sample_queries_path: "data/sample/sample_queries.tsv"
+  sample_qrels_path: "data/sample/sample_qrels.tsv"
+
+  dev_passages_path: "data/processed/sample_passages.tsv"
+  dev_queries_path: "data/processed/sample_queries.tsv"
+  dev_qrels_path: "data/processed/sample_qrels.tsv"
+
+  raw_passages_path: "data/raw/collection.tsv"
+  raw_queries_path: "data/raw/queries.dev.tsv"
+  raw_qrels_path: "data/raw/qrels.dev.tsv"
+
+bm25:
+  k1: 1.5
+  b: 0.75
+  method: "lucene"   # 'lucene' (non-negative smoothed IDF) or 'robertson'
+  lowercase: true
+  remove_stopwords: false
+  stemming: false
+  sample_index_path: "data/indices/bm25_sample.pkl"
+  dev_index_path: "data/indices/bm25_dev_100k.pkl"
+  full_index_path: "data/indices/bm25_full.pkl"
+
+dense:
+  model_name: "sentence-transformers/msmarco-distilbert-base-v4"
+  index_path: "data/indices/faiss_index.bin"
+  batch_size: 64
+  dimension: 768
+
+evaluation:
+  metrics:
+    - "mrr@10"
+    - "ndcg@10"
+    - "recall@100"
+  top_k: 10
