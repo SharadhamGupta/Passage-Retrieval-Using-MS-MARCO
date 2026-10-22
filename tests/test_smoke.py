@@ -17,7 +17,7 @@ def test_config_loader():
     config = load_config()
 
     assert config.project.name == "ms-marco-passage-retrieval"
-    assert config.project.version in ("0.1.0", "0.2.0")
+    assert config.project.version in ("0.1.0", "0.2.0", "0.3.0")
     assert config.data.mode in ("sample", "dev", "full")
     assert config.bm25.k1 == 1.5
     assert config.bm25.b == 0.75

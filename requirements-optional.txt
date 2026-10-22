@@ -1,14 +1,16 @@
 # ==============================================================================
-# MS MARCO Passage Retrieval - Optional Dependencies (Sprint 2+)
-# Install these only when implementing Dense Retrieval, FAISS, and Streamlit
+# MS MARCO Passage Retrieval - Dense retrieval + Streamlit UI (Sprints 4 and 6)
+# Install with:  pip install -r requirements.txt -r requirements-optional.txt
 # ==============================================================================
 
-# Dense Embeddings & Vector Search (Sprint 2)
-# Note: For Windows, faiss-cpu is recommended unless NVIDIA GPU + CUDA are configured.
+# Dense embeddings & vector search (Sprint 4)
+# torch from PyPI is CPU-only on Windows/macOS. On Linux, to avoid the large CUDA
+# download, install torch first with:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
 torch>=2.2.0
-sentence-transformers>=2.5.0
+sentence-transformers>=2.7.0
 faiss-cpu>=1.8.0
 
-# Interactive Web Interface (Sprint 4)
-streamlit>=1.32.0
-pandas>=2.2.0
+# Interactive web interface (Sprint 6)
+streamlit>=1.37.0
+altair>=5.0.0

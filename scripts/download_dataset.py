@@ -165,7 +165,7 @@ def safe_extract_tar(tar_path: Path, extract_dir: Path) -> bool:
             for member in tar.getmembers():
                 dest_file = extract_dir / member.name
                 if not dest_file.resolve().is_relative_to(extract_dir.resolve()):
-                    raise SecurityError(f"Archive member attempts path traversal: {member.name}")
+                    raise RuntimeError(f"Archive member attempts path traversal: {member.name}")
 
             # Extract using data filter if on Python 3.12+, otherwise default
             if hasattr(tarfile, "data_filter"):

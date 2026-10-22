@@ -85,6 +85,13 @@ def main():
         help="Dataset mode: 'sample' (5 docs), 'dev' (100,000 real MS MARCO passages), 'full' (8.8M collection).",
     )
     parser.add_argument(
+        "--method",
+        type=str,
+        choices=["bm25", "tfidf", "dense"],
+        default="bm25",
+        help="Retrieval method. tfidf/dense load indexes built by scripts/build_sparse_indexes.py / build_dense_index.py.",
+    )
+    parser.add_argument(
         "--rebuild",
         action="store_true",
         help="Force rebuild index from TSV even if cached index exists on disk.",
@@ -97,18 +104,36 @@ def main():
 
     args = parser.parse_args()
 
-    # Load or build index
-    index = get_or_build_index(mode=args.mode, force_rebuild=args.rebuild)
-    if args.build_only:
-        print(f"Index for mode='{args.mode}' successfully built ({index.corpus_size:,} passages).")
-        return
+    if args.method == "bm25":
+        # Load or build index
+        index = get_or_build_index(mode=args.mode, force_rebuild=args.rebuild)
+        if args.build_only:
+            print(f"Index for mode='{args.mode}' successfully built ({index.corpus_size:,} passages).")
+            return
+        searcher = BM25Searcher(index)
+    else:
+        from src.retrieval.registry import build_sparse_index, index_exists, load_retriever
 
-    searcher = BM25Searcher(index)
+        if args.method == "tfidf" and (args.rebuild or not index_exists("tfidf", args.mode)):
+            build_sparse_index("tfidf", args.mode)
+        if args.build_only:
+            print(f"TF-IDF/dense index for mode='{args.mode}' is ready.")
+            return
+        try:
+            searcher = load_retriever(args.method, args.mode)
+        except Exception as exc:
+            print(f"\nCannot load {args.method} retriever: {exc}\n")
+            sys.exit(2)
+
+    class _Sized:  # corpus size for the banner, whichever searcher is active
+        corpus_size = len(searcher.passage_ids if hasattr(searcher, "passage_ids") else searcher.searcher.passage_ids)
+
+    index = _Sized
 
     if args.query:
         # Single query mode
         results = searcher.search(args.query, top_k=args.top_k)
-        print(format_search_results(args.query, results, mode=args.mode))
+        print(format_search_results(args.query, results, mode=f"{args.mode}/{args.method}"))
     else:
         # Interactive mode
         print("\n=== MS MARCO Passage Retrieval Interactive Search ===")
@@ -124,7 +149,7 @@ def main():
                     break
 
                 results = searcher.search(user_query, top_k=args.top_k)
-                print(format_search_results(user_query, results, mode=args.mode))
+                print(format_search_results(user_query, results, mode=f"{args.mode}/{args.method}"))
             except (KeyboardInterrupt, EOFError):
                 print("\nSession interrupted. Exiting.")
                 break

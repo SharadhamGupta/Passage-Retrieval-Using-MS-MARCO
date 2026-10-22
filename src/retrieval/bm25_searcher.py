@@ -41,6 +41,11 @@ class BM25Searcher:
             raise ValueError("BM25Index must be built or loaded before initializing BM25Searcher.")
         self.index = index
 
+    @property
+    def passage_ids(self) -> List[str]:
+        """Ordered external passage IDs of the indexed corpus (used for corpus checks)."""
+        return self.index.doc_ids
+
     def search(self, query: str, top_k: int = 10) -> List[SearchResult]:
         """Searches the passage index and returns the top_k ranked passages.
 

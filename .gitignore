@@ -49,3 +49,8 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Evaluation outputs of the 5-passage toy sample (regenerate any time)
+reports/eval/sample/
+# Interrupted dense-index builds
+*.f32

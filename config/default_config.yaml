@@ -1,6 +1,6 @@
 project:
   name: "ms-marco-passage-retrieval"
-  version: "0.2.0"
+  version: "0.3.0"
   random_seed: 42
 
 data:
@@ -33,15 +33,40 @@ bm25:
   dev_index_path: "data/indices/bm25_dev_100k.pkl"
   full_index_path: "data/indices/bm25_full.pkl"
 
+tfidf:
+  # Same tokenizer settings as BM25 so the two lexical baselines differ only in weighting.
+  sublinear_tf: true      # tf -> 1 + ln(tf)
+  smooth_idf: true        # idf = ln((1 + N) / (1 + df)) + 1
+  min_df: 1
+  lowercase: true
+  remove_stopwords: false
+  stemming: false
+  sample_index_path: "data/indices/tfidf_sample.pkl"
+  dev_index_path: "data/indices/tfidf_dev_100k.pkl"
+  full_index_path: "data/indices/tfidf_full.pkl"
+
 dense:
-  model_name: "sentence-transformers/msmarco-distilbert-base-v4"
-  index_path: "data/indices/faiss_index.bin"
-  batch_size: 64
-  dimension: 768
+  # Documented MS MARCO bi-encoder: 384-dim, unit-length (normalized) output,
+  # trained on MS MARCO passage (query, answer) pairs. Any Sentence Transformers
+  # model id or a local folder path works here. Changing it requires re-indexing.
+  model_name: "sentence-transformers/msmarco-MiniLM-L6-cos-v5"
+  batch_size: 64          # lower to 16-32 if you run out of RAM / GPU memory
+  device: null            # null = auto (cuda if available, else cpu); or "cpu" / "cuda"
+  max_seq_length: 256
+  query_prefix: ""        # e.g. "query: " for E5-style models
+  passage_prefix: ""      # e.g. "passage: " for E5-style models
+  sample_index_dir: "data/indices/dense_sample"
+  dev_index_dir: "data/indices/dense_dev_100k"
+  full_index_dir: "data/indices/dense_full"
 
 evaluation:
   metrics:
+    - "recall@5"
+    - "recall@10"
     - "mrr@10"
     - "ndcg@10"
     - "recall@100"
   top_k: 10
+  retrieval_depth: 100          # ranked list depth saved per query (Recall@100 + disagreement analysis)
+  output_dir: "reports/eval"     # artifacts go to reports/eval/<mode>/
+  significance_iterations: 10000

@@ -1,15 +1,24 @@
 # ==============================================================================
-# MS MARCO Passage Retrieval - Core Dependencies (Sprint 0 & Sprint 1)
+# MS MARCO Passage Retrieval - Core Dependencies
+# (data pipeline, BM25, TF-IDF, evaluation, tests)
 # ==============================================================================
 
 # Configuration & Utilities
 pyyaml>=6.0.1
 tqdm>=4.66.0
+psutil>=5.9.0
 
-# Text Preprocessing & Classical IR
+# Numerics, Text Preprocessing & Classical IR
+numpy>=1.26.0
+scikit-learn>=1.4.0
 nltk>=3.8.1
 rank-bm25>=0.2.2
+requests>=2.31.0
 
-# Testing & Evaluation
+# Evaluation outputs (tables & charts)
+pandas>=2.2.0
+matplotlib>=3.8.0
+
+# Testing & Evaluation cross-checks
 pytest>=8.0.0
 ir_measures>=0.4.0
