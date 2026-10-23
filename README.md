@@ -8,7 +8,7 @@
 
 A modular, mathematically sound, and rigorously evaluated Information Retrieval (IR) system built on the **Microsoft MS MARCO Passage Ranking Dataset**. 
 
-Designed as a senior-level college capstone project, this repository implements three distinct paradigms of text retrieval—**Classical BM25 (Lucene-standard)**, **Vector-Space TF-IDF**, and **Dense Semantic Retrieval (Sentence Transformers + FAISS)**—governed by a unified evaluation protocol with bootstrap confidence intervals, paired statistical significance testing, and an interactive Streamlit web application.
+This repository implements three distinct paradigms of text retrieval—**Classical BM25 (Lucene-standard)**, **Vector-Space TF-IDF**, and **Dense Semantic Retrieval (Sentence Transformers + FAISS)**—governed by a unified evaluation protocol with bootstrap confidence intervals, paired statistical significance testing, and an interactive Streamlit web application.
 
 ---
 
@@ -108,7 +108,7 @@ Passage-Retrieval-Using-MS-MARCO/
 ├── config/
 │   └── default_config.yaml            <- Central configuration for paths and model hyperparameters
 ├── docs/
-│   ├── VIVA_NOTES.md                  <- Formula derivations, worked examples & defense prep
+│   ├── VIVA_NOTES.md                  <- Theoretical derivations, vector proofs & metric notes
 │   └── UI_TEST_CHECKLIST.md           <- Streamlit functional & visual QA checklist
 ├── reports/
 │   ├── dataset_validation_report.md   <- Streaming data audit across 8.84M passages
@@ -238,17 +238,7 @@ python -m pytest -v tests/test_app.py               # Headless Streamlit AppTest
 
 ---
 
-## 7. College Exam & Viva Defense Reference
-
-Detailed theoretical notes covering examiner questions, proofs, and metric derivations are documented in [`docs/VIVA_NOTES.md`](docs/VIVA_NOTES.md):
-- **Why Inner Product equals Cosine Similarity**: Because vectors are $L_2$-normalized prior to FAISS indexing ($\|\mathbf{q}\| = \|\mathbf{p}\| = 1$), $\mathbf{q} \cdot \mathbf{p} = \cos(\mathbf{q}, \mathbf{p})$.
-- **Why Offline Indexing is Essential**: Forward passes through transformer encoders are computationally heavy. Encoding 100k passages once offline enables millisecond query latency at search time.
-- **Why Paired Randomization Tests**: Evaluating differences per query eliminates inter-query variance, determining whether an observed score delta is statistically significant ($p < 0.05$).
-- **The Cranfield Unjudged Assumption**: Unjudged passages in `qrels` are assumed non-relevant ($\text{rel}=0$), meaning all calculated metrics represent strict empirical lower bounds.
-
----
-
-## 8. License & Acknowledgments
+## 7. License & Acknowledgments
 
 - **Dataset**: Microsoft Machine Reading Comprehension ([MS MARCO](https://microsoft.github.io/msmarco/)), licensed under Microsoft Research terms.
 - **Dense Encoder**: Pre-trained MiniLM models courtesy of the [Sentence-Transformers](https://sbert.net) library.
